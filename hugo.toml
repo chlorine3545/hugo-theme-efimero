@@ -71,7 +71,7 @@ enableCsrf = true
         banner = "/img/banner.webp"
         startDate = "12/15/2023 12:00:00"
         announcement = true
-        showMath = false
+        showMath = true
         darkMode = true
 
     # 作者信息
