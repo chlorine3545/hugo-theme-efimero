@@ -1,0 +1,49 @@
+{{- $page_context := cond .IsHome site . -}}
+{{- $pages := where $page_context.RegularPages "Section" "posts" -}}
+{{- $limit := site.Config.Services.RSS.Limit -}}
+{{- if ge $limit 1 -}}
+  {{- $pages = $pages | first $limit -}}
+{{- end -}}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">  
+  <channel>
+    <title>{{ if ne .Title site.Title }}{{ with .Title }}{{.}} | {{ end }}{{end}}{{ site.Title }}</title>
+    <link>{{ .Permalink }}</link>
+    {{- with .OutputFormats.Get "RSS" }}
+      {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
+    {{ end -}}
+    <description>
+      {{ .Title | default site.Title }}
+      feedId:60327762505861120+userId:62827580691769344
+    </description>
+    <generator>Hugo Theme Efímero</generator>
+    {{- with site.LanguageCode }}<language>{{.}}</language>{{end -}}
+    {{- with site.Copyright }}<copyright>{{ replace (replace . "{year}" now.Year) "&copy;" "©" | plainify }}</copyright>{{end -}}
+    {{- if not .Date.IsZero }}<lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>{{ end -}}
+    {{- if .Scratch.Get "og_image" }}
+    <image>
+      <url>{{ .Scratch.Get "og_image" }}</url>
+      <title>{{ .Title | default site.Title }}</title>
+      <link>{{ .Permalink }}</link>
+    </image>
+    {{end -}}
+    {{ range $pages }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      <guid>{{ .Permalink }}</guid>
+      <description>
+        {{ `<![CDATA[` | safeHTML }}
+        <div style="border: 2px solid #4a4a4a; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+          <h3 style="color: #333; margin-top: 0;">{{ .Title }}</h3>
+          <p style="color: #666;">{{ .Description }}</p>
+          <a href="{{ .Permalink }}" style="color: #1a73e8; text-decoration: none;">阅读更多</a>
+        </div>
+        {{ .Content | safeHTML }}
+        {{ `]]>` | safeHTML }}
+      </description>
+    </item>
+    {{ end }}
+  </channel>
+</rss>

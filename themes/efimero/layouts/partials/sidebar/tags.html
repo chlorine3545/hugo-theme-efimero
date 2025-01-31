@@ -1,0 +1,17 @@
+<div class="font-bold transition text-lg text-neutral-900 dark:text-neutral-100 relative ml-8 mt-4 mb-2 flex items-center
+before:content-['']
+before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
+before:absolute before:left-[-16px] before:top-[5.5px]">
+    <i class="i-carbon-tag-group mr-2"></i>
+    <a href="/tags">Tags</a>
+</div>
+<div id="tags" class="collapse-wrapper px-4 overflow-hidden">
+    <div class="flex gap-2 flex-wrap">
+        {{ range .Site.Taxonomies.tags }}
+        <a href="{{ .Page.RelPermalink }}" aria-label="{{ .Page.Title }}"
+            class="btn-regular h-8 text-sm px-3 rounded-lg">
+            {{ .Page.Title }}
+        </a>
+        {{ end }}
+    </div>
+</div>

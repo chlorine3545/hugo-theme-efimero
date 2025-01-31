@@ -1,0 +1,21 @@
+{{/*  这个文件是工具，用来引入各种 UnoCSS 静态类，防止动态模板不能被 UnoCSS 识别。确实不优雅，但是我也没办法了  */}}
+<div class="i-carbon-home text-xl"></div>
+<div class="i-carbon-email text-xl"></div>
+<div class="i-carbon-logo-github text-xl"></div>
+<div class="i-carbon-logo-gitlab text-xl"></div>
+<div class="i-carbon-logo-youtube text-xl"></div>
+<div class="i-simple-codeberg text-xl"></div>
+<div class="i-simple-gitee text-xl"></div>
+<div class="i-simple-bilibili text-xl"></div>
+<div class="i-carbon-rss text-xl"></div>
+<div class="i-mdi-email-newsletter text-xl"></div>
+<div class="i-simple-orcid text-xl"></div>
+<div class="i-simple-matrix text-xl"></div>
+<div class="i-carbon-logo-mastodon text-xl"></div>
+
+<i class="i-carbon-fork text-xl"></i>
+<i class="i-carbon-copy text-xl"></i>
+
+{{ if templates.Exists "partials/function/extend-utility.html" }}
+{{ partialCached "function/extended-utilify.html" . }}
+{{ end }}

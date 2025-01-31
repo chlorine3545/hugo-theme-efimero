@@ -1,0 +1,50 @@
+{{ $id := delimit (slice "gitea" (partial "function/uid.html" .)) "-" }}
+{{- $giteaURL := print (.Get "baseURL") "/api/v1/repos/" (.Get "repo") -}}
+{{- $giteaData := resources.GetRemote $giteaURL | transform.Unmarshal -}}
+{{- $giteaColors := .Site.Data.giteaColors -}}
+{{- with $giteaData -}}
+
+{{ if $giteaData }}
+{{ with $giteaData }}
+<div id="{{ $id }}" class="w-full p-4 md:p-6 rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition-transform transform-gpu hover:scale-105 git-card">
+    <div class="flex items-center mb-4">
+        <i class="i-simple-gitea text-3xl text-neutral-800 dark:text-white mr-3"></i>
+        <a target="_blank" href="{{ .html_url }}"
+            class="font-bold text-xl text-neutral-900 dark:text-white hover:text-blue-500 transition-colors truncate">
+            {{ .full_name | markdownify }}
+        </a>
+    </div>
+
+    <p class="text-base text-neutral-700 dark:text-neutral-300 mb-4 truncate">
+        {{ .description | markdownify }}
+    </p>
+
+    <div class="flex flex-wrap items-center text-neutral-800 dark:text-neutral-300 text-xs space-x-3">
+        <div class="flex items-center mb-2">
+            <span class="inline-block h-3 w-3 rounded-full mr-2"
+                style="background-color: {{ index $giteaColors (.language | default " Unknown") }}"></span>
+            <span>{{ .language | default "Unknown" }}</span>
+        </div>
+
+        <div class="flex items-center mb-2 space-x-2">
+            <i class="i-carbon-star text-base md:text-lg"></i>
+            <span>{{ .stars_count | default 0 }}</span>
+        </div>
+
+        <div class="flex items-center mb-2 space-x-2">
+            <i class="i-carbon-fork text-base md:text-lg"></i>
+            <span>{{ .forks | default 0 }}</span>
+        </div>
+    </div>
+</div>
+{{ end }}
+{{ else }}
+<div id="{{ $id }}"
+    class="w-full p-4 md:p-6 rounded-2xl shadow-lg border border-red-200 dark:border-red-700 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300">
+    <p class="text-center font-bold">
+        ⚠️ Unable to fetch data for the Gitea repository "{{ .full_name }}".
+    </p>
+</div>
+{{ warnf "Gitea data fetch failed for repository: %s" .full_name }}
+{{ end }}
+{{ end }}

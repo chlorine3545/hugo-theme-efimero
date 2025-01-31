@@ -1,0 +1,19 @@
+{{/*  KaTeX  */}}
+{{ if .Params.showMath | default .Site.Params.Basic.showMath}}
+<link rel="stylesheet" href="https://cdn.jsdmirror.com/npm/katex@0.16.11/dist/katex.min.css" />
+<script defer src="https://cdn.jsdmirror.com/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdmirror.com/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ],
+          throwOnError: false
+        });"></script>
+{{ end }}
+
+{{/*  Twikoo 代码  */}}
+<script src="https://cdn.jsdmirror.com/gh/chlorine3545/customcdn@2b63d63/js/twikoo/1_6_41.min.js" defer crossorigin="anonymous"></script>
+
+{{/*  Fancybox 代码  */}}
+<script src="https://cdn.jsdmirror.com/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js" crossorigin="anonymous" defer></script>

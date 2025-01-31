@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    [
+      "@shikijs/rehype",
+      {
+        "themes": {
+          "light": "one-light",
+          "dark": "one-dark-pro"
+        }
+      }
+    ]
+  ]
+}

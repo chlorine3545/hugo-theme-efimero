@@ -1,0 +1,31 @@
+<style>
+    @media (max-width: 768px) {
+        .responsive-right-align {
+            text-align: center !important;
+        }
+        .responsive-right-align a {
+            justify-content: center !important;
+        }
+    }
+</style>
+
+<div class="transition text-50 text-sm responsive-right-align" style="text-align: right;">
+    {{ if .Site.Params.Icp.enable }}
+    <div class="mb-1">
+        <a href="https://beian.miit.gov.cn" target="_blank">{{ .Site.Params.Icp.number }}</a>
+    </div>
+    {{ end }}
+    {{ if .Site.Params.Mps.enable}}
+    <div class="mb-1">
+        <a href="https://beian.mps.gov.cn/#/query/webSearch?code={{ .Site.Params.Mps.code }}" rel="noreferrer" target="_blank" class="flex items-center justify-end" >
+            <img src="/img/beian.png" alt="公安备案图标" style="width: 20px; height: auto;" class="mr-1.5">
+            <span>{{ .Site.Params.Mps.number }}</span>
+        </a>
+    </div>
+    {{ end }}
+    {{ if .Site.Params.Moe.enable }}
+    <div class="mb-1">
+        <a href="https://icp.gov.moe/?keyword={{ .Site.Params.Moe.code }}" target="_blank">{{ .Site.Params.Moe.number }}</a>
+    </div>
+    {{ end }}
+</div>

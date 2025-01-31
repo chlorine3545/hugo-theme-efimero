@@ -1,0 +1,23 @@
+{{/* layouts/shortcodes/friends.html */}}
+{{ with resources.Get "css/addon/friends.css" }}
+<style>
+    {{ .Content | safeCSS }}
+</style>
+{{ end }}
+
+<div class="friend-link-container">
+    {{ $path := "json/friends.json" }}
+    {{ $friends := resources.Get $path | transform.Unmarshal }}
+    {{ range $friends.friend }}
+    <div class="friend-link">
+        <div class="room-number">{{ .room }}</div>
+        <a href="{{ .url }}" target="_blank">
+            <img src="{{ with .ava }}{{ . }}{{ else }}https://weavatar.com/avatar/{{ .hash }}?d=identicon{{ end }}" alt="{{ .name }}" class="friend-link-avatar">
+        </a>
+        <div class="friend-link-content">
+            <h3><a href="{{ .url }}" target="_blank">{{ .note }}（{{ .name }}）</a></h3>
+            <p>{{ .des }}</p>
+        </div>
+    </div>
+    {{ end }}
+</div>

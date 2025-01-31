@@ -1,0 +1,195 @@
+{{ with resources.Get "css/addon/whisper.css" }}
+<link rel="stylesheet" href="{{ .RelPermalink }}">
+{{ end }}
+
+<body>
+    <div id="toots-content" class="toots-container">
+        <div id="toots"></div>
+        <div id="toots-loading" class="loading-container" style="display: none;">
+            <div class="spinner"></div>
+        </div>
+        <div class="pt-3 text-center flex justify-center">
+            <button id="toots-moreButton" onclick="tootsShowMore()">
+                加载更多
+            </button>
+        </div>
+    </div>
+</body>
+
+{{- with resources.Get "js/lib/time-fmt.min.js" }}
+<script data-swup-reload-script>
+    function initTimeFmt() {
+        (function () {
+            {{ .Content | safeJS }}
+            // 确保 formatTime 在全局作用域中可用
+            if (typeof formatTime === 'function') {
+                window.formatTime = formatTime;
+            } else {
+                console.error('formatTime is not defined in time-fmt.min.js');
+            }
+        })();
+    }
+    // 初始加载时执行
+    initTimeFmt();
+    // 监听 Swup 页面切换事件
+    document.addEventListener('swup:contentReplaced', initTimeFmt);
+</script>
+{{- end }}
+
+<script data-swup-reload-script>
+    (function () {
+        let maxId = null;
+        let isFirst = true;
+        const cacheKey = 'mastodon_toots_cache';
+        const cacheExpiration = 5 * 60 * 1000; // 5 minutes
+        const tootsDiv = document.getElementById('toots');
+        const tootsMoreButton = document.getElementById('toots-moreButton');
+        const tootsLoading = document.getElementById('toots-loading');
+        const urlObject = new URL(window.location.href);
+        const idValue = urlObject.searchParams.get("id");
+
+        async function getPublicToots(forceRefresh = false) {
+            let limit = "{{ .Get 2 | default 5 }}";
+            const currentTime = new Date().getTime();
+
+            // Check cache for non-forced refresh
+            if (!forceRefresh && !maxId) {
+                const cachedData = localStorage.getItem(cacheKey);
+                if (cachedData) {
+                    const { data, timestamp } = JSON.parse(cachedData);
+                    if (currentTime - timestamp < cacheExpiration) {
+                        console.log("Cache hit");
+                        return data;
+                    }
+                }
+            }
+
+            let toots;
+            if (idValue != null && isFirst) {
+                isFirst = false;
+                const response = await fetch("{{ .Site.Params.Whisper.instance }}/api/v1/statuses/" + idValue, {
+                    headers: {
+                        'Authorization': "Bearer {{ .Site.Params.bot_token }}"
+                    }
+                });
+                toots = [await response.json()];
+            } else {
+                const queryParams = maxId ? (`?limit=${limit}&max_id=${maxId}`) : "?limit=" + limit;
+                const response = await fetch("{{ .Site.Params.Whisper.instance }}/api/v1/accounts/{{ .Site.Params.Whisper.user_id }}/statuses" + queryParams + "&exclude_replies=true", {
+                    headers: {
+                        'Authorization': "Bearer {{ .Site.Params.Whisper.bot_token }}"
+                    }
+                });
+                toots = await response.json();
+            }
+
+            // Cache only the first page
+            if (!maxId) {
+                localStorage.setItem(cacheKey, JSON.stringify({
+                    data: toots,
+                    timestamp: currentTime
+                }));
+            }
+
+            return toots;
+        }
+
+        function createMediaGrid(mediaAttachments) {
+            if (mediaAttachments.length === 0) return '';
+
+            const mediaClass = mediaAttachments.length === 1 ? 'single' :
+                mediaAttachments.length === 2 ? 'double' :
+                    mediaAttachments.length === 3 ? 'triple' :
+                        mediaAttachments.length === 4 ? 'quad' : 'multi';
+
+            const mediaHtml = mediaAttachments.map(media => {
+                if (media.type === 'image') {
+                    return `
+                    <a href="${media.url}" 
+                       data-fancybox="gallery" 
+                       data-caption="${media.description || ''}" 
+                       class="padding-bottom: 15px">
+                        <img src="${media.preview_url}" 
+                             alt="${media.description || ''}" 
+                             loading="lazy">
+                    </a>
+                    <figcaption class="text-center text-neutral-500 mt-2 md:mt-3 text-xs md:text-sm">
+                        ${media.description || ''}
+                    </figcaption>`;
+                } else if (media.type === 'video') {
+                    return `
+                    <a href="${media.url}" data-fancybox="gallery" data-type="video" data-caption="${media.description || ''}">
+                        <video src="${media.url}" preload="none" controls></video>
+                    </a>`;
+                } else {
+                    return ''; // 可以在这里添加对其他类型媒体的处理
+                }
+            }).join('');
+
+            return `<div class="toot-media ${mediaClass}">${mediaHtml}</div>`;
+        }
+
+        async function displayToots(forceRefresh = false) {
+            try {
+                tootsLoading.style.display = "block";
+                tootsMoreButton.style.display = 'none';
+                const toots = await getPublicToots(forceRefresh);
+                if (toots && toots.length > 0) {
+                    toots.forEach(toot => {
+                        const tootDiv = document.createElement("div");
+                        tootDiv.classList.add("toot");
+
+                        tootDiv.innerHTML = `
+                        <div class="toot-info">
+                            <div class="toot-avatar">
+                                <img src="{{ .Site.Params.Author.avatar }}" alt="${toot.account.display_name}">
+                            </div>
+                            <div class="toot-profile">
+                                <strong>${toot.account.display_name}</strong>
+                                <a href="${toot.url}" target="_blank">@${toot.account.acct}</a>
+                                <small>${window.formatTime(toot.created_at)}</small>
+                            </div>
+                        </div>
+                        <div class="toot-content">
+                            ${toot.content}
+                        </div>
+                        ${createMediaGrid(toot.media_attachments)}
+                        <br>
+                        <div class="toot-stats">
+                            <span><i class="mdi--reply"></i>${toot.replies_count}</span>
+                            <span><i class="mdi--twitter-retweet"></i>${toot.reblogs_count}</span>
+                            <span><i class="mdi--star"></i>${toot.favourites_count}</span>
+                        </div>
+                    `;
+
+                        tootsDiv.appendChild(tootDiv);
+                        maxId = toot.id;
+                    });
+                    tootsMoreButton.style.display = 'block';
+                } else {
+                    tootsMoreButton.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('获取 Toots 时出错：', error);
+                tootsDiv.innerHTML += `<p>加载失败: ${error.message}</p>`;
+            }
+            tootsLoading.style.display = "none";
+        }
+
+        function tootsShowMore() {
+            displayToots();
+        }
+
+        // 将 tootsShowMore 绑定到 window 对象
+        window.tootsShowMore = tootsShowMore;
+
+        // 初始加载
+        const isForcedRefresh = performance.navigation.type === 1;
+        if (isForcedRefresh) {
+            localStorage.removeItem(cacheKey);
+        }
+        displayToots(isForcedRefresh);
+
+        window.ViewImage && ViewImage.init('.toot-content img');
+    })();
+</script>

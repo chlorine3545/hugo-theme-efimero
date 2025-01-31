@@ -1,0 +1,23 @@
+{{/* sidebar.html */}}
+
+<div id="sidebar"
+    class="w-full row-start-3 row-end-4 col-span-2 lg:row-start-2 lg:row-end-3 lg:col-span-1 lg:max-w-[17.5rem] onload-animation">
+    <div class="flex flex-col w-full gap-4 mb-4">
+        {{ partial "sidebar/profile.html" . }}
+    </div>
+    <div class="flex flex-col w-full gap-4 top-4 sticky">
+        {{ if .Site.Params.Basic.announcement }}
+        <widget-layout id="announcement-widget" class="pb-4 card-base">
+            {{ partial "sidebar/announcement.html" . }}
+        </widget-layout>
+        {{ end }}
+        
+        <widget-layout id="category-widget" class="pb-4 card-base hidden md:block">
+            {{ partial "sidebar/categories.html" . }}
+        </widget-layout>
+
+        <widget-layout id="tags-widget" class="pb-4 card-base hidden md:block">
+            {{ partial "sidebar/tags.html" . }}
+        </widget-layout>
+    </div>
+</div>

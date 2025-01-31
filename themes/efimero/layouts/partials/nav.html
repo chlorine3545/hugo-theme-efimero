@@ -1,0 +1,110 @@
+<div
+    class="card-base sticky top-0 overflow-visible max-w-[var(--page-width)] h-[4.5rem] rounded-t-none mx-auto flex items-center justify-between px-4">
+    <a href="{{ relURL "" }}" class="btn-plain h-[3.25rem] px-5 font-bold rounded-lg active:scale-95">
+        <div class="flex flex-row text-[var(--primary)] items-center text-md">
+            {{/*
+            <Icon name="material-symbols:home-outline-rounded" size={"1.75rem"} class="mb-1 mr-2" /> */}}
+            {{ .Site.Title }}
+        </div>
+    </a>
+    <div class="hidden md:flex items-center">
+        {{ range .Site.Menus.main }}
+        <div class="menu-item group relative inline-block ml-4">
+            <a aria-label="{{ .Name }}" href="{{ .URL | absURL}}"
+                class="btn-plain h-11 font-bold px-5 rounded-lg active:scale-100 flex items-center w-auto">
+                {{ .Name }}
+            </a>
+            {{ if .HasChildren }}
+            <div
+                class="submenu absolute hidden bg-[var(--card-bg)] shadow-md mt-2 left-1/2 -translate-x-1/2 top-full rounded-lg w-full">
+                {{ range .Children }}
+                <a aria-label="{{ .Name }}" href="{{ .URL | absURL}}"
+                    class="block btn-plain h-9 font-bold px-4 rounded-lg active:scale-95 items-center flex mb-2 w-full">
+                    {{ .Name }}
+                </a>
+                {{ end }}
+            </div>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+
+    <div class="flex items-center">
+        <button aria-label="Light/Dark Mode" class="btn-plain h-11 w-11 rounded-lg active:scale-90 border-none"
+            id="scheme-switch">
+            <div class="absolute opacity-[var(--display-light-icon)] i-carbon-sun text-xl"></div>
+            <div class="absolute opacity-[var(--display-dark-icon)] i-carbon-moon text-xl"></div>
+        </button>
+
+        <button id="color-settings-trigger" aria-label="Color Settings"
+            class="btn-plain h-11 w-11 rounded-lg active:scale-90 border-none ml-2">
+            <div class="i-carbon-color-palette text-xl"></div>
+        </button>
+
+        <button id="docsearch-trigger" aria-label="Search"
+            class="btn-plain h-11 w-11 rounded-lg active:scale-90 border-none ml-2">
+            <div class="i-carbon-search text-xl"></div>
+        </button>
+
+        <button aria-label="Menu" name="Nav Menu"
+            class="btn-plain w-11 h-11 rounded-lg active:scale-90 md:hidden border-none ml-2" id="nav-menu-switch">
+            <div class="i-mdi-menu"></div>
+        </button>
+
+        <div id="color-settings-panel" class="float-panel closed absolute transition-all w-60 md:w-80 right-4 px-4 py-4 mx-auto">
+            <div class="flex flex-row gap-2 mb-3 items-center justify-between">
+                <div
+                    class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3 before:content-[''] before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)] before:absolute before:-left-2 before:top-[0.33rem]">
+                    主题颜色
+                    <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md active:scale-90" id="reset-hue">
+                        <div class="i-mdi-restart text-[var(--primary)] text-base"></div>
+                    </button>
+                </div>
+                <div class="flex gap-1">
+                    <div id="hueValue"
+                        class="transition bg-[var(--btn-regular-bg)] w-10 h-7 rounded-md flex justify-center font-bold text-sm items-center text-[var(--btn-content)]">
+                        215</div>
+                </div>
+            </div>
+
+            <div class="w-full h-6 px-1 bg-[oklch(0.80_0.10_0)] dark:bg-[oklch(0.70_0.10_0)] rounded select-none">
+                <input aria-label="Theme Color" type="range" min="0" max="360" value="0" class="slider w-full"
+                    id="colorSlider" step="5">
+            </div>
+        </div>
+
+    </div>
+
+    {{/* Mobile Menu */}}
+    <div id="nav-menu-panel" class="float-panel closed absolute transition-all fixed right-4 px-2 py-2">
+        {{ range .Site.Menus.main }}
+        <div class="mobile-menu-item">
+            <a href="{{ .URL | absURL }}"
+                class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
+                                hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
+                <div
+                    class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                    {{ .Name }}
+                </div>
+                {{ if .HasChildren }}
+                <button aria-label="Toggle Submenu" class="btn-plain w-8 h-8 rounded-lg active:scale-90 border-none">
+                    <div class="i-mdi-chevron-right"></div>
+                </button>
+                {{ end }}
+            </a>
+            {{ if .HasChildren }}
+            <div class="mobile-submenu hidden pl-6">
+                {{ range .Children }}
+                <a href="{{ .URL | absURL }}"
+                    class="block py-2 pl-3 pr-1 rounded-lg
+                                    hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition ml-2 text-black/75 dark:text-white/75">
+                    {{ .Name }}
+                </a>
+                {{ end }}
+            </div>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+
+</div>

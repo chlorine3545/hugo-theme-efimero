@@ -1,0 +1,19 @@
+<div
+    class="card-base max-w-[var(--page-width)] min-h-[6.5rem] rounded-b-none mx-auto flex items-center px-6 justify-between">
+    {{ partial "footer/techstack.html" . }}
+    {{ if .Site.Params.Wowbook.enable }}
+    {{ partial "footer/wowbook.html" . }}
+    {{ end }}
+    {{ partial "footer/icp.html" . }}
+</div>
+
+{{- with resources.Get "js/candy.js" }}
+<script src="{{ .RelPermalink }}" defer></script>
+{{- end }}
+
+{{/* 点击复制 */}}
+<script data-swup-reload-script src="https://cdn.jsdmirror.com/gh/chlorine3545/customcdn@latest/js/clickcopy.min.js" defer crossorigin="anonymous"></script>
+
+{{ if templates.Exists "partials/extend-footer.html" }}
+{{ partialCached "extended-footer.html" . }}
+{{ end }}

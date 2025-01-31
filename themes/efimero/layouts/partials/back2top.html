@@ -1,0 +1,16 @@
+<div class="genki-dash lg:block">
+	<div id="sora-tabi-btn" class="sora-tabi-btn hide flex items-center rounded-2xl overflow-hidden transition"
+		onclick="soraTabi()">
+		<button aria-label="Sora Tabi" class="btn-card h-[3.75rem] w-[3.75rem] border-none">
+			<div class="i-mdi-arrow-top"></div>
+		</button>
+	</div>
+</div>
+
+{{/*  {{ with resources.Get "css/components/b2t.css" }}
+<link rel="stylesheet" href="{{ .RelPermalink }}">
+{{ end }}  */}}
+
+{{ with resources.Get "js/components/b2t.js" }}
+<script src="{{ .RelPermalink }}" defer></script>
+{{ end }}

@@ -1,0 +1,27 @@
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:description"
+    content="{{ if .Description }}{{ .Description }}{{ else if .Summary }}{{ .Summary }}{{ else }}{{ .Site.Params.Basic.description }}{{ end }}">
+
+<meta property="og:url" content="{{ .Permalink }}">
+
+{{ if .Params.featuredImage }}
+<meta property="og:image" content="{{ .Params.featuredImage | absURL }}">
+{{ else }}
+<meta property="og:image" content="{{ .Site.Params.Basic.banner | absURL }}">
+{{ end }}
+
+{{ if eq .Type "post" }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02" | safeHTML }}">
+<meta property="article:author" content="{{ .Params.author }}">
+{{ end }}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ .Title }}">
+<meta property="twitter:description"
+    content="{{ if .Description }}{{ .Description }}{{ else if .Summary }}{{ .Summary }}{{ else }}{{ .Site.Params.Basic.description }}{{ end }}">
+
+{{ if .Params.featuredImage }}
+<meta property="twitter:image" content="{{ .Params.featuredImage | absURL }}">
+{{ else }}
+<meta property="twitter:image" content="{{ .Site.Params.Basic.banner | absURL }}">
+{{ end }}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="{{ or site.Language.LanguageCode site.Language.Lang }}" dir="{{ or site.Language.LanguageDirection `ltr` }}"
+    class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]">
+
+<head>
+    {{ partial "opengraph.html" . }}
+    {{ partial "head.html" . }}
+    {{- partial "head/paginator.html" . -}}
+    <script>
+        // 这段代码必须放在这里，因为 Hugo 默认不会处理 assets/js 中的模板语法
+        (function () {
+            // console.log('schme-switch');
+            var userPreference = localStorage.getItem('color-scheme');
+            var htmlElement = document.documentElement;
+
+            if (userPreference) {
+                htmlElement.classList.add(userPreference);
+            } else {
+                // 如果没有用户偏好，使用站点默认设置
+                htmlElement.classList.add('{{ if .Site.Params.Basic.darkMode }}dark{{ else }}light{{ end }}');
+            }
+        })();
+    </script>
+</head>
+
+{{/* TODO: temporarily make banner height same for all pages since I cannot make the transition feel good I want to make
+the height transition parallel with the content transition instead of blocking it */}}
+
+<body class="min-h-screen transition {{ if ne .Site.Params.Basic.banner "" }}enable-banner{{ end }}">
+    {{ if ne .Site.Params.Basic.banner "" }}
+    {{ partial "banner.html" . }}
+    {{ end }}
+    <div class="max-w-[var(--page-width)] min-h-screen grid grid-cols-[17.5rem_auto] grid-rows-[auto_auto_1fr_auto] lg:grid-rows-[auto_1fr_auto]
+    mx-auto gap-4 relative px-0 md:px-4">
+        <div id="top-row" class="col-span-2 grid-rows-1 z-50 onload-animation">
+            <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition"> </div>
+            {{/* used for onload animation */}}
+            {{ partial "nav.html" . }}
+        </div>
+        {{ partial "sidebar.html" . }}
+
+        <div id="content-wrapper"
+            class="row-start-2 row-end-3 col-span-2 lg:col-span-1 overflow-hidden onload-animation">
+            {{/* the overflow-hidden here prevent long text break the layout */}}
+            <main id="swup" class="transition-fade">
+                {{ block "main" . }}{{ end }}
+            </main>
+
+        </div>
+
+        <div id="footer" class="grid-rows-3 col-span-2 mt-4 onload-animation">
+            <footer>
+                {{ partial "footer.html" . }}
+            </footer>
+        </div>
+        {{ partial "partials/back2top.html" . }}
+    </div>
+</body>
+
+{{ partialCached "head/js.html" . }}
+{{ partial "vendor.html" . }}
+
+<script data-swup-ignore-script defer>
+    const swup = new Swup({
+        plugins: [
+            new SwupPreloadPlugin(),
+            new SwupScriptsPlugin({ optin: true }),
+            new SwupScrollPlugin({ animateScroll: true })
+        ]
+    });
+
+    function initTwikoo() {
+        if (document.querySelector('#tcomment')) {
+            twikoo.init({ envId: "{{ .Site.Params.Twikoo.envId }}", el: "#tcomment" });
+        }
+    }
+
+    function bindFancybox() {
+        Fancybox.bind("[data-fancybox]", {});
+    }
+
+    function init() {
+        initTwikoo();
+        bindFancybox();
+    }
+
+    if (document.readyState === "complete") {
+        init();
+    }
+    else {
+        document.addEventListener("DOMContentLoaded", () => init());
+    }
+    
+    swup.hooks.on('page:view', () => init());
+</script>
+
+</html>

@@ -1,0 +1,33 @@
+.genki-dash {
+    width: 3.5rem;
+    height: 3.5rem;
+    position: absolute;
+    right: 2rem;
+    top: 0;
+}
+
+.sora-tabi-btn {
+    color: var(--primary);
+    font-size: 2rem;
+    font-weight: bold;
+    border: none;
+    position: fixed;
+    bottom: 15rem;
+    opacity: 1;
+    cursor: pointer;
+    transform: translateX(5rem);
+}
+
+.sora-tabi-btn i {
+    font-size: 1.5rem;
+}
+
+.sora-tabi-btn.hide {
+    transform: translateX(5rem) scale(0.9);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sora-tabi-btn:active {
+    transform: translateX(5rem) scale(0.9);
+}

@@ -1,0 +1,15 @@
+{{ with resources.Get "css/components/twikoo.css" }}
+<style>
+    {{ .Content | safeCSS }}
+</style>
+{{ end }}
+
+<hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+
+{{ if templates.Exists "partials/extended-comments.html" }}
+{{ partial "extended-comments.html" . }}
+{{ else }}
+<div id="comments-container" class="pt-3 text-neutral-900 dark:text-neutral-100" style="display: block;">
+    <div id="tcomment"></div>
+</div>
+{{ end }}

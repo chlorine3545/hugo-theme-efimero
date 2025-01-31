@@ -1,0 +1,22 @@
+<div class="my-4 p-4 border dark:border-color-neutral-600 border-color-neutral rounded-xl shadow-md cursor-pointer transition-transform transform-gpu md:hover:scale-105 shadow-md md:hover:shadow-lg"
+    id="ai-summary-toggle">
+    <div class="flex items-center justify-between pb-3">
+        <div class="flex items-center">
+            <span class="i-carbon-ai-generate text-neutral-900 dark:text-neutral-100 mr-4"></span>
+            <span class="text-lg text-neutral-900 dark:text-neutral-100 font-semibold">AI 摘要</span>
+        </div>
+        <div class="flex items-center">
+            <span
+                class="px-2 py-1 bg-gradient-to-r from-blue-500 to-purple-500 bg-opacity-20 backdrop-blur-md text-neutral-300 rounded-md text-sm mr-2 ring-1 ring-offset-1 ring-indigo-200 dark:ring-indigo-700">109酱</span>
+            <svg class="w-5 h-5 text-neutral-900 dark:text-neutral-100 transition-all duration-300 transform hover:scale-110"
+                id="ai-summary-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </div>
+    </div>
+    <div class="border-t border-neutral-200 dark:border-neutral-700 my-3"></div>
+    <div class="mt-3 text-neutral-700 dark:text-neutral-300 hidden" id="ai-summary-content">
+        {{ .Description }}
+    </div>
+</div>

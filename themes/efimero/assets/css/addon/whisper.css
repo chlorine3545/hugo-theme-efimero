@@ -1,0 +1,233 @@
+:root {
+    --primary-color: #657786;
+    --bg-color: #1387cf;
+    --hover-bg-color: #1991db;
+    --border-color: #888888;
+    --spinner-color: #1da1f2;
+    --padding-small: 12px;
+    --padding-medium: 16px;
+    --margin-small: 10px;
+    --margin-medium: 16px;
+}
+
+.toots-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--padding-small);
+}
+
+.toot {
+    background-color: transparent;
+    border: 0.5px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--padding-medium);
+    margin-bottom: var(--margin-medium);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.toot-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--padding-small);
+}
+
+.toot-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: var(--padding-small);
+}
+
+.toot-profile strong {
+    font-size: 15px;
+    display: inline-block;
+}
+
+.toot-profile a,
+.toot-profile small {
+    font-size: 14px;
+    color: var(--primary-color);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.toot-profile small {
+    display: block;
+    margin-top: 2px;
+}
+
+.toot-content {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: var(--padding-small);
+}
+
+.toot-content img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-top: var(--padding-small);
+}
+
+.toot-media {
+    display: grid;
+    gap: 2px;
+    margin-top: var(--margin-small);
+}
+
+.toot-media img, .toot-media video {
+    width: 100%;
+    height: auto; /* 改为自动高度以保持比例 */
+    max-height: 400px; /* 设置一个最大高度 */
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.toot-media.single {
+    grid-template-columns: 1fr;
+}
+
+.toot-media.double,
+.toot-media.triple,
+.toot-media.quad,
+.toot-media.multi {
+    grid-template-columns: repeat(2, 1fr); /* 默认两列 */
+}
+
+/* 三张图片时，第一张横跨两列 */
+.toot-media.triple img:first-child {
+    grid-column: span 2;
+    height: 400px; /* 可以设置特定的高度 */
+}
+
+/* 五张或更多图片时，第三行开始三列 */
+.toot-media.multi img:nth-child(n+5) {
+    grid-column: span 1;
+}
+
+.toot-media.single {
+    grid-template-columns: 1fr;
+}
+
+.toot-media.double,
+.toot-media.triple,
+.toot-media.quad,
+.toot-media.multi {
+    grid-template-columns: 1fr 1fr;
+}
+
+.toot-media.triple img:first-child {
+    grid-row: span 2;
+}
+
+.toot-stats {
+    display: flex;
+    justify-content: space-between;
+    color: var(--primary-color);
+    font-size: 14px;
+}
+
+.toot-stats span {
+    display: flex;
+    align-items: center;
+}
+
+.toot-stats i {
+    margin-right: 5px;
+}
+
+.mdi--reply,
+.mdi--star,
+.mdi--twitter-retweet {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100%;
+}
+
+.mdi--reply {
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M10 9V5l-7 7l7 7v-4.1c5 0 8.5 1.6 11 5.1c-1-5-4-10-11-11'/%3E%3C/svg%3E");
+}
+
+.mdi--star {
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2L9.19 8.62L2 9.24l5.45 4.73L5.82 21z'/%3E%3C/svg%3E");
+}
+
+.mdi--twitter-retweet {
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M6 5.75L10.25 10H7v6h6.5l2 2H7a2 2 0 0 1-2-2v-6H1.75zm12 12.5L13.75 14H17V8h-6.5l-2-2H17a2 2 0 0 1 2 2v6h3.25z'/%3E%3C/svg%3E");
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+}
+
+.mdi--reply,
+.mdi--star,
+.mdi--twitter-retweet {
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+}
+
+.spinner {
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 3px solid var(--spinner-color);
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-container {
+    text-align: center;
+    padding: 20px;
+}
+
+#toots-moreButton {
+    background-color: var(--bg-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#toots-moreButton:hover {
+    background-color: var(--hover-bg-color);
+}
+
+@media (max-width: 600px) {
+    .toots-container {
+        padding: var(--padding-small);
+    }
+
+    .toot {
+        padding: var(--padding-small);
+    }
+
+    .toot-content {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 500px) {
+    .toot-media.single img {
+        max-height: 300px;
+    }
+}
