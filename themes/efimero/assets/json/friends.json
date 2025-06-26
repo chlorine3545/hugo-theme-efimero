@@ -1,0 +1,13 @@
+{
+    "friend": [
+        {
+            "name": "Name",
+            "note": "Note",
+            "room": "Room",
+            "url": "https://example.com",
+            "hash": "",
+            "des": "description here",
+            "ava": "avatar here"
+        }
+    ]
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面未找到</title>
+    <style>
+        :root {
+            --bg-color: #f0f0f0;
+            --text-color: #333;
+            --secondary-text-color: #666;
+            --btn-bg-color: #007bff;
+            --btn-hover-bg-color: #0056b3;
+        }
+
+        html.dark {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --secondary-text-color: #b0b0b0;
+            --btn-bg-color: #3a86ff;
+            --btn-hover-bg-color: #2563eb;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            color: var(--secondary-text-color);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--btn-bg-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover-bg-color);
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .container>* {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="image-container">
+            <img src="/img/404.webp" alt="404 Error Illustration">
+        </div>
+        <h1>404</h1>
+        <p>哎呀!看来你迷路了。</p>
+        <p>别担心,让我们一起回到首页吧。</p>
+        <a href="/" class="btn">返回首页</a>
+    </div>
+</body>
+
+<script defer>
+    (function () {
+        // 检查并应用保存的主题
+        console.log(localStorage.getItem('color-scheme'));
+        if (localStorage.getItem('color-scheme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    })();
+</script>
+
+</html>

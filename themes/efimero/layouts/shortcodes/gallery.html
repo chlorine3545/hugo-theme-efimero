@@ -1,0 +1,141 @@
+{{ $images := .Params }}
+{{ $disableImageOptimization := .Page.Site.Params.disableImageOptimization | default false }}
+
+<div class="gallery-container relative w-full overflow-hidden rounded-2xl shadow-lg" style="aspect-ratio: 16/9;">
+    <div class="gallery-wrapper flex transition-transform duration-300 ease-out h-full">
+        {{ range $index, $image := $images }}
+        {{ $resource := "" }}
+        {{ if $.Page.Resources.GetMatch $image }}
+        {{ $resource = $.Page.Resources.GetMatch $image }}
+        {{ else if resources.GetMatch $image }}
+        {{ $resource = resources.Get $image }}
+        {{ end }}
+
+        {{ with $resource }}
+        <figure class="gallery-image w-full h-full flex-shrink-0">
+            {{ if or $disableImageOptimization (eq .MediaType.SubType "svg") }}
+            <a href="{{ .RelPermalink }}" data-fancybox="gallery">
+                <img src="{{ .RelPermalink }}" alt="Gallery image {{ add $index 1 }}" class="w-full h-full object-cover"
+                    loading="lazy">
+            </a>
+            {{ else }}
+            <a href="{{ (.Resize " 1320x").RelPermalink }}" data-fancybox="gallery">
+                <picture>
+                    <source srcset="{{ (.Resize " 330x").RelPermalink }} 330w, {{ (.Resize "660x" ).RelPermalink }}
+                        660w, {{ (.Resize "1024x" ).RelPermalink }} 1024w, {{ (.Resize "1320x" ).RelPermalink }} 2x">
+                    <img src="{{ (.Resize " 660x").RelPermalink }}" alt="Gallery image {{ add $index 1 }}"
+                        class="w-full h-full object-cover" loading="lazy">
+                </picture>
+            </a>
+            {{ end }}
+        </figure>
+        {{ else }}
+        <figure class="gallery-image w-full h-full flex-shrink-0">
+            <a href="{{ $image }}" data-fancybox="gallery">
+                <img src="{{ $image }}" alt="Gallery image {{ add $index 1 }}" class="w-full h-full object-cover"
+                    loading="lazy">
+            </a>
+        </figure>
+        {{ end }}
+        {{ end }}
+    </div>
+    <button
+        class="gallery-nav-btn prev absolute top-1/2 left-4 -translate-y-1/2 bg-white/20 hover:bg-white/40 transition-colors duration-300 rounded-full p-2"
+        aria-label="Previous image">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+    </button>
+    <button
+        class="gallery-nav-btn next absolute top-1/2 right-4 -translate-y-1/2 bg-white/20 hover:bg-white/40 transition-colors duration-300 rounded-full p-2"
+        aria-label="Next image">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+    </button>
+    <div class="gallery-nav absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {{ range $index, $image := $images }}
+        <button class="gallery-dot w-2 h-2 rounded-full bg-white/50 transition-all duration-300"
+            data-index="{{ $index }}"></button>
+        {{ end }}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const galleries = document.querySelectorAll('.gallery-container');
+
+        galleries.forEach(gallery => {
+            const wrapper = gallery.querySelector('.gallery-wrapper');
+            const images = gallery.querySelectorAll('.gallery-image');
+            const dots = gallery.querySelectorAll('.gallery-dot');
+            const prevBtn = gallery.querySelector('.gallery-nav-btn.prev');
+            const nextBtn = gallery.querySelector('.gallery-nav-btn.next');
+            let currentIndex = 0;
+
+            const updateGallery = (index) => {
+                wrapper.style.transform = `translateX(-${index * 100}%)`;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('bg-white', i === index);
+                    dot.classList.toggle('bg-white/50', i !== index);
+                });
+                prevBtn.style.display = index === 0 ? 'none' : 'block';
+                nextBtn.style.display = index === images.length - 1 ? 'none' : 'block';
+            };
+
+            const nextImage = () => {
+                if (currentIndex < images.length - 1) {
+                    currentIndex++;
+                    updateGallery(currentIndex);
+                }
+            };
+
+            const prevImage = () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateGallery(currentIndex);
+                }
+            };
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateGallery(currentIndex);
+                });
+            });
+
+            prevBtn.addEventListener('click', prevImage);
+            nextBtn.addEventListener('click', nextImage);
+
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            gallery.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            gallery.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) {
+                    nextImage();
+                } else if (touchEndX - touchStartX > 50) {
+                    prevImage();
+                }
+            }, { passive: true });
+
+            // 键盘导航
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    prevImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                }
+            });
+
+            // 初始化gallery状态
+            updateGallery(currentIndex);
+        });
+    });
+</script>

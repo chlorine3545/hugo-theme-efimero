@@ -1,0 +1,47 @@
+{{- $disableImageOptimization := .Page.Site.Params.disableImageOptimization | default false }}
+{{- $url := .Get "src" }}
+{{- $caption := .Get "caption" }}
+{{- $altText := .Get "caption" }}
+{{- $width := .Get "width" | default "100%" }}
+{{- $height := .Get "height" | default "auto" }}
+
+{{- $resource := "" }}
+{{- if $.Page.Resources.GetMatch $url }}
+{{- $resource = $.Page.Resources.GetMatch $url }}
+{{- else if resources.GetMatch $url }}
+{{- $resource = resources.Get $url }}
+{{- end }}
+{{- with $resource }}
+<figure class="flex flex-col items-center justify-center w-full">
+    {{- if or $disableImageOptimization (eq .MediaType.SubType "svg")}}
+    <a data-fancybox="gallery" data-src="{{ .RelPermalink }}" data-caption="{{ $caption }}">
+        <picture>
+            <source type="image/webp" srcset="{{ .RelPermalink }}">
+            <img style="width: {{ $width }}; height: {{ $height }}; max-height: 36rem;" loading="lazy" src="{{ .RelPermalink }}"
+                alt="{{ $altText }}" {{ with $altText }} title="{{ . }}" {{ end }} />
+        </picture>
+    </a>
+    {{- else }}
+    <a data-fancybox="gallery" data-src="{{ (.Resize " 1320x").RelPermalink }}" data-caption="{{ $caption }}">
+        <picture>
+            <source type="image/webp" srcset="{{ (.Resize " 330x").RelPermalink }} 330w, {{ (.Resize "660x"
+                ).RelPermalink }} 660w, {{ (.Resize "1024x" ).RelPermalink }} 1024w, {{ (.Resize "1320x" ).RelPermalink
+                }} 2x">
+            <img style="width: {{ $width }}; height: {{ $height }}; max-height: 36rem;" loading="lazy" src="{{ (.Resize "660x").RelPermalink }}" alt="{{ $altText }}" {{ with $altText }} title="{{ . }}" {{ end }} />
+        </picture>
+    </a>
+    {{- end }}
+</figure>
+<figcaption class="text-center">{{ $caption }}</figcaption>
+{{- else }}
+<figure class="flex flex-col items-center justify-center w-full">
+    <a data-fancybox="gallery" data-src="{{ $url }}" data-caption="{{ $caption }}">
+        <picture>
+            <source type="image/webp" srcset="{{ $url }}">
+            <img style="width: {{ $width }}; height: {{ $height }}; max-height: 36rem;" loading="lazy" src="{{ $url }}"
+                alt="{{ $altText }}" {{ with $altText }} title="{{ . }}" {{ end }} />
+        </picture>
+    </a>
+</figure>
+<figcaption class="text-center">{{ $caption }}</figcaption>
+{{- end }}

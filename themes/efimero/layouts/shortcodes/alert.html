@@ -1,0 +1,25 @@
+{{/* layouts/shortcodes/alert.html */}}
+{{ $type := .Get 0 | default "note" }}
+{{ $icon := dict
+"note" "i-carbon-information"
+"tip" "i-carbon-idea"
+"important" "i-carbon-warning"
+"warning" "i-carbon-warning-alt"
+"caution" "i-carbon-warning-hex"
+}}
+{{ $color := dict "note" "blue" "tip" "green" "important" "purple" "warning" "yellow" "caution" "red" }}
+
+<div class="my-4 p-4 border rounded-lg 
+            bg-{{ index $color $type }}-100 dark:bg-{{ index $color $type }}-900
+            border-{{ index $color $type }}-200 dark:border-{{ index $color $type }}-700
+            text-{{ index $color $type }}-800 dark:text-{{ index $color $type }}-100">
+    <div class="flex items-center mb-2">
+        <span
+            class="mr-2 text-{{ index $color $type }}-500 dark:text-{{ index $color $type }}-300 text-xl {{ index $icon $type }}"></span>
+        <span class="font-semibold text-{{ index $color $type }}-800 dark:text-{{ index $color $type }}-100">{{ title
+            $type }}</span>
+    </div>
+    <div>
+        {{ .Inner | markdownify }}
+    </div>
+</div>

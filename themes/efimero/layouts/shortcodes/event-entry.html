@@ -1,0 +1,10 @@
+{{/* layouts/shortcodes/event-entry.html */}}
+<div class="flex items-start mb-8">
+    <div class="z-10 bg-gray-500 text-white rounded-full h-8 w-8 flex items-center justify-center -ml-1 mt-2">
+        {{ .Get "number" }}
+    </div>
+    <div class="ml-8 flex-1">
+        <div class="date text-[var(--primary)]">{{ .Get "date" }}</div>
+        <div class="title font-bold">{{ .Get "title" }}</div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+# 主题名称
+name = "浮光"
+
+# 主题版本
+version = "0.0.0"
+
+# 主题描述
+description = "「浮光」——优雅的 Hugo 主题，基于 landscape 主题开发。Efímero, an exquisitely elegant Hugo theme developed with origin from the Landscape Theme."
+
+# 主题预览图片链接
+demosite = "https://example.com/theme-preview.png"
+
+# 主题所属分类
+tags = ["Swup", "UnoCSS", "blog"]
+
+features = [
+    "announcement",
+    "katex",
+    "swup",
+    "toc",
+    "twikoo",
+    "unocss",
+    "whisper",
+]
+
+# 我也不知道最低兼容到哪个版本，总之越新越好就是了
+min_version = "0.121.0"
+
+[author]
+    homepage = "https://chlo.is"
+    name     = "Chlorine"
+
+[original]
+    homepage = "https://www.ftls.xyz"
+    name     = "恐咖兵糖"
+    repo     = "https://github.com/kkbt0/Hugo-Landscape"

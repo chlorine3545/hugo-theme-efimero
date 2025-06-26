@@ -1,0 +1,13 @@
+node_modules
+exampleSite/public/
+public
+resources
+*/.hugo_build.lock
+.DS_Store
+*/.DS_Store
+*/.obsidian
+*/_Drafts
+.vercel
+tmp.*
+.vscode
+*/jsconfig.json

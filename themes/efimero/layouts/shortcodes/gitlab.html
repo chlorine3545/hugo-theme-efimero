@@ -1,0 +1,49 @@
+{{ $id := delimit (slice "gitlab" (partial "function/uid.html" .)) "-" }}
+{{- $gitlabURL := print (default "https://gitlab.com" (.Get "baseURL")) "/api/v4/projects/" (.Get "projectID") -}}
+{{- $gitlabData := resources.GetRemote $gitlabURL | transform.Unmarshal -}}
+{{- $licenseMap := .Site.Data.licenseMap -}}
+
+{{- with $gitlabData -}}
+{{ if $gitlabData }}
+{{ with $gitlabData }}
+<div id="{{ $id }}" class="w-full p-4 md:p-6 rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition-transform transform-gpu hover:scale-105 git-card">
+    <div class="flex items-center mb-4">
+        <i class="i-mdi-gitlab text-3xl text-neutral-800 dark:text-white mr-3"></i>
+        <a target="_blank" href="{{ .web_url }}"
+            class="font-bold text-xl text-neutral-900 dark:text-white hover:text-blue-500 transition-colors truncate">
+            {{ .name_with_namespace | markdownify }}
+        </a>
+    </div>
+
+    <p class="text-base text-neutral-700 dark:text-neutral-300 mb-4 truncate">
+        {{ .description | markdownify }}
+    </p>
+
+    <div class="flex flex-wrap items-center text-neutral-800 dark:text-neutral-300 text-xs space-x-3">
+        <div class="flex items-center mb-2 space-x-2">
+            <i class="i-carbon-star text-base md:text-lg"></i>
+            <span>{{ .star_count | default 0 }}</span>
+        </div>
+
+        <div class="flex items-center mb-2 space-x-2">
+            <i class="i-carbon-fork text-base md:text-lg"></i>
+            <span>{{ .forks_count | default 0 }}</span>
+        </div>
+
+        <div class="flex items-center mb-2 space-x-2">
+            <i class="i-mdi-scale-balance text-base md:text-lg"></i>
+            <span>{{ if .license_info }} {{ index $licenseMap .license_info | default .license_info }} {{ else }} No
+                License {{ end }}</span>
+        </div>
+    </div>
+</div>
+{{ end }}
+{{ else }}
+<div id="{{ $id }}"
+    class="w-full p-4 md:p-6 rounded-2xl shadow-lg border border-red-200 dark:border-red-700 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300">
+    <p class="text-center font-bold">
+        ⚠️ Unable to fetch data for the GitLab project "{{ .name_with_namespace }}".
+</div>
+{{ warnf "GitLab data fetch failed for repository: %s" .name_with_namespace }}
+{{ end }}
+{{ end }}

@@ -1,0 +1,16 @@
+{{ define "main" }}
+
+<div class="transition flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 md:py-0 md:bg-transparent md:gap-4 mb-4"
+    style="--coverWidth:28%">
+    {{ range where .Site.RegularPages "Type" "posts"}}
+
+    {{ end }}
+    {{- if .Site.RegularPages -}}
+    {{- range .Paginator.Pages -}}
+    {{ partial "postcard.html" . }}
+    {{- end -}}
+    {{- partial "paginator.html" . -}}
+    {{- end -}}
+
+</div>
+{{ end }}

@@ -1,0 +1,79 @@
+{{- with resources.Get "js/nav.js" }}
+  {{- if eq hugo.Environment "development" }}
+    {{- with . | js.Build }}
+      <script src="{{ .RelPermalink }}" defer></script>
+    {{- end }}
+  {{- else }}
+    {{- $opts := dict "minify" true }}
+    {{- with . | js.Build $opts | fingerprint }}
+      <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous" defer></script>
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{/*  Swup 代码  */}}
+{{- with resources.Get "js/lib/Swup.min.js" }}
+  <script src="{{ .RelPermalink }}"></script>
+{{- end }}
+
+{{/*  Algolia Docsearch  */}}
+<script src="https://cdn.jsdmirror.com/npm/@docsearch/js@3" crossorigin="anonymous" defer></script>
+<script defer type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        // 创建 DocSearch 容器
+        const docsearchContainer = document.createElement('div');
+        docsearchContainer.id = 'docsearch';
+        document.body.appendChild(docsearchContainer);
+
+        // 检查并应用当前主题
+        function applyTheme() {
+            const isDarkTheme = document.documentElement.classList.contains('dark');
+            if (isDarkTheme) {
+                docsearchContainer.setAttribute('data-theme', 'dark');
+            } else {
+                docsearchContainer.removeAttribute('data-theme');
+            }
+        }
+
+        // 初始化时应用主题
+        applyTheme();
+
+        // 监听主题变化
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.type === "attributes" && mutation.attributeName === "class") {
+                    applyTheme();
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+
+        // 初始化 DocSearch
+        docsearch({
+            appId: "{{ .Site.Params.Algolia.appid}}",
+            apiKey: "{{ .Site.Params.Algolia.apikey}}",
+            indexName: "{{ .Site.Params.Algolia.indexname}}",
+            container: "#docsearch",
+            debug: {{ .Site.Params.Algolia.debug}},
+        });
+
+        // 为自定义按钮添加点击事件
+        const searchButton = document.getElementById('docsearch-trigger');
+        searchButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            const docSearchButton = document.querySelector('.DocSearch-Button');
+            if (docSearchButton) {
+                docSearchButton.click();
+            }
+        });
+
+        // 隐藏原始的 DocSearch 按钮
+        const style = document.createElement('style');
+        style.textContent = '.DocSearch-Button { display: none !important; }';
+        document.head.appendChild(style);
+    });
+</script>

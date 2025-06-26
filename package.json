@@ -1,0 +1,11 @@
+{
+    "dependencies": {
+        "@shikijs/rehype": "^1.25.1",
+        "rehype-cli": "^12.0.1",
+        "remark-math": "^6.0.0",
+        "shiki": "^1.25.1"
+    },
+    "scripts": {
+        "shiki": "bunx rehype-cli public -o"
+    }
+}

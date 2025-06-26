@@ -1,0 +1,76 @@
+{{- $disableImageOptimization := .Page.Site.Params.disableImageOptimization | default false }}
+{{- $url := urls.Parse .Destination }}
+{{- $caption := "" }}
+{{- $altText := .Title }}
+{{- $size := "" }}
+
+{{- if .Text }}
+    {{- $parts := split .Text "|" }}
+    {{- $caption = index $parts 0 }}
+    {{- if ge (len $parts) 2 }}
+        {{- $size = index $parts 1 }}
+    {{- else }}
+        {{- $size = index $parts 0 }}
+        {{- $caption = "" }}
+    {{- end }}
+{{- end }}
+
+{{- $imgAlt := or $altText $caption (strings.TrimPrefix "/" $url.Path) }}
+
+{{/* 外链图片 */}}
+{{- if findRE "^https?" $url.Scheme }}
+<figure class="flex flex-col items-center justify-center w-full">
+    <a data-fancybox="gallery" data-src="{{ $url.String }}" {{ if $caption }}data-caption="{{ $caption }}"{{ end }}>
+        <picture>
+            <source srcset="{{ $url.String }}">
+            <img style="width: {{ if $size }}{{ $size }}px{{ else }}100%{{ end }}; height: auto; max-height: 36rem;" loading="lazy" src="{{ $url.String }}"
+                alt="{{ $imgAlt }}" {{ with $altText }} title="{{ . }}" {{ end }} />
+        </picture>
+    </a>
+</figure>
+{{- if $caption }}
+<figcaption class="text-center">{{ $caption }}</figcaption>
+{{- end }}
+{{- else }}
+{{- $resource := "" }}
+{{- if $.Page.Resources.GetMatch ($url.String) }}
+{{- $resource = $.Page.Resources.GetMatch ($url.String) }}
+{{- else if resources.GetMatch ($url.String) }}
+{{- $resource = resources.Get ($url.String) }}
+{{- end }}
+{{- with $resource }}
+<figure class="flex flex-col items-center justify-center w-full">
+    {{- if or $disableImageOptimization (eq .MediaType.SubType "svg")}}
+    <a data-fancybox="gallery" data-src="{{ .RelPermalink }}" {{ if $caption }}data-caption="{{ $caption }}"{{ end }}>
+        <picture>
+            <source srcset="{{ .RelPermalink }}">
+            <img style="width: {{ if $size }}{{ $size }}px{{ else }}100%{{ end }}; height: auto; max-height: 36rem;" loading="lazy" src="{{ .RelPermalink }}"
+                alt="{{ $imgAlt }}" {{ with $altText }} title="{{ . }}" {{ end }} />
+        </picture>
+    </a>
+    {{- else }}
+    <a data-fancybox="gallery" data-src="{{ (.Resize "1320x").RelPermalink }}" {{ if $caption }}data-caption="{{ $caption }}"{{ end }}>
+        <picture>
+            <source srcset="{{ (.Resize "330x").RelPermalink }} 330w, {{ (.Resize "660x").RelPermalink }} 660w, {{ (.Resize "1024x" ).RelPermalink }} 1024w, {{ (.Resize "1320x" ).RelPermalink }} 2x">
+            <img style="width: {{ if $size }}{{ $size }}px{{ else }}100%{{ end }}; height: auto; max-height: 36rem;" loading="lazy" src="{{ (.Resize "660x").RelPermalink }}" alt="{{ $imgAlt }}" {{ with $altText }} title="{{ . }}" {{ end }} />
+        </picture>
+    </a>{{- end }}
+</figure>
+{{- if $caption }}
+<figcaption class="text-center">{{ $caption }}</figcaption>
+{{- end }}
+{{- else }}
+<figure class="flex flex-col items-center justify-center w-full">
+    <a data-fancybox="gallery" data-src="{{ $url.String }}" {{ if $caption }}data-caption="{{ $caption }}"{{ end }}>
+        <picture>
+            <source srcset="{{ $url.String }}">
+            <img style="width: {{ if $size }}{{ $size }}px{{ else }}100%{{ end }}; height: auto; max-height: 36rem;" loading="lazy" src="{{ $url.String }}"
+                alt="{{ $imgAlt }}" {{ with $altText }} title="{{ . }}" {{ end }} />
+        </picture>
+    </a>
+</figure>
+{{- if $caption }}
+<figcaption class="text-center">{{ $caption }}</figcaption>
+{{- end }}
+{{- end }}
+{{- end }}
